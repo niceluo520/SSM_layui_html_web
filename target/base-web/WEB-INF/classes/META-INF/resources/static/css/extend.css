@@ -1,0 +1,205 @@
+/**
+ @Name：extend.css 扩展代码样式
+ @Author：cbox 
+ */
+ 
+/****************** 图片组及图片之上的漂浮按钮  begin ******************/
+.ext-img-showgroup {
+    position: relative;
+    overflow: hidden;
+    margin-right:5px;
+}
+
+.ext-img-showgroup .ext-img-cover {
+    padding: 5px 0px;
+    width: 100%;
+    position: absolute;
+    bottom: 0px;
+    display: none;
+    justify-content: space-around;
+}
+
+.ext-img-showgroup:hover .ext-img-cover {
+    display: flex;
+    background: rgba(0, 0, 0, 0.425);
+}
+
+.ext-img-showgroup .ext-img-cover .ext-img-cover-btn {
+    font-size: 12px;
+    cursor: pointer;
+    padding: 5px 0px;
+    width:45%;
+    text-align:center;
+    border-radius: 3px;
+    background: rgba(49, 135, 233, 0.863);
+    color: #fff;
+}
+
+.ext-img-showgroup .ext-img-cover .ext-img-cover-btn:hover {
+    background: rgba(49, 135, 233, 0.973);
+}
+/****************** 图片组及图片之上的漂浮按钮  end ******************/
+
+/****************** 缩略图样式 begin ******************/
+.ext-img-thumbnail-show{
+	height:110px;
+	border:1px solid ;
+	border-color:rgba(0, 0, 0, 0.1);
+	cursor:pointer;
+}
+/*** 缩略图样式 end ***/
+
+/*** 鼠标形状  begin ***/
+.ext-mouse-hand{
+	cursor:pointer;
+}
+/****************** 鼠标形状  end ***/
+
+/****************** 按钮相关样式  begin ***/
+/*按钮不可用*/
+.ext-btn-disable{
+	/* background-color:#babbbb;
+	pointer-events: none; */
+	opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/*按钮圆角*/
+.ext-btn-radius{
+	border-radius: 5px;
+}
+
+/*表单内按钮*/
+.ext-form-btn-opr{
+	color:#0080ff;
+	text-decoration:underline;
+	width:fit-content;
+	margin:10px;
+	line-height:20px;
+	background-color: transparent;
+	border-style: none;
+	cursor:pointer;
+}
+.ext-form-btn-cancel{
+	width:50px;
+	margin:10px;
+	cursor:pointer;
+}
+/****************** 按钮相关样式  end ******************/
+
+/****************** 文件附件相关样式  begin ******************/
+.ext-file-showgroup {
+    position: relative;
+    overflow: hidden;
+}
+
+.ext-file-showgroup .ext-file-img-thumbnail{
+	height:20px;    
+}
+
+.ext-file-showgroup .ext-file-show{
+    margin-right:20px;
+}
+.ext-file-showgroup .ext-file-btn{
+   
+    text-decoration:underline;
+    margin-right:15px;
+    cursor:pointer;
+}
+
+.ext-file-showgroup .ext-file-delete{
+    color:red;
+    text-decoration:underline;
+    margin-right:15px;
+    cursor:pointer;
+}
+/****************** 文件附件相关样式  end ******************/
+
+/******************  上传文件图标 begin ******************/
+/* 放那个背景图的 */
+.formatmin {
+	display: inline-block;
+	background: url(../images/file_icon.png) no-repeat;
+	width: 22px;
+	height: 22px;
+	vertical-align: middle;
+	margin: 0 6px 2px 0;
+}
+/* word文档 */
+.doc, .docx, .dotx, .dot, .docm, .dotm, .xps, .mht, .mhtml, .rtf, .xml, .odt {
+	background-position: -11px -22px;
+}
+/* excel表格 */
+.xls, .xlsx, .xlsb, .xlsm, .xlst {
+	background-position: -11px -51px;
+}
+/* ppt文件 */
+.ppt, .pptx {
+	background-position: -11px -80px;
+}
+.pdf {
+	background-position: -11px -110px;
+}
+/* 视频 */
+.move, .mp4, .avi, .wmv, .f4v, .rm, .rmvb, .wmv, .mid, .mpeg, .mpg, .dat {
+	background-position: -11px -138px;
+}
+/* 图片 */
+.jpg, .jpeg, .png, .gif, .bmp, .jpeg2000 {
+	background-position: -11px -168px;
+}
+/* flash */
+.flv, .swf, .flic, .flc, .fli, .flash {
+	background-position: -11px -197px;
+}
+/* 压缩文件 */
+.rar, .zip {
+	background-position: -11px -226px;
+}
+/* 未知文件 */
+.unknown {
+	background-position: -11px -283px;
+}
+/****************** 文件附件相关样式  end ******************/
+
+/*** 查询表单 **/
+.cp-sform .ext-sform {
+	padding-top: 15px;
+    padding-bottom: 15px;
+    height: auto;
+    position: relative;
+}
+
+/****************** input-text的样式  begin ******************/
+/* 加宽以便和select对齐，以及组合图标 */
+.ext-input-text-hand-search{
+	padding-right:30px;
+	cursor:pointer;
+}
+.ext-input-text{
+	padding-right:30px;
+}
+.ext-input-text-hand{
+	padding-right:35px;
+	cursor:pointer;
+}
+/* 追加图标的样式 */
+.ext-input-icon-append{
+	margin:8px 0px 0px -30px;
+	font-size:22px;
+	color:gray;
+}
+/****************** input-text的样式  end ******************/
+
+/****************** 界面信息提示的样式  begin ******************/
+/* 信息提示 */
+.ext-tip-info{
+	color:#999!important;
+}
+/* 信息警示 */
+.ext-tip-warn{
+	color:#FF6600;
+}
+/****************** 界面信息提示的样式  end ******************/
+
+

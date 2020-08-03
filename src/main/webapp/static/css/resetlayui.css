@@ -1,0 +1,72 @@
+/**
+
+ @Name：resetlayui 重置layui.css样式，根据实际项目需要进行覆盖
+ @Author：cbox
+ 
+ */
+ 
+/* 设置默认按钮上的图标大小与文字保持一致，看着比较和谐 */
+.layui-btn .layui-icon{
+	font-size:16px; /* 默认为18px */
+}
+
+/* 设置列表头部栏白色背景，去掉边框，重设内偏离对齐 */
+.layui-table-tool{
+	background-color: white;
+    padding:3px 15px 10px;
+}
+.layui-table-view {
+    border: none;
+}
+.layui-table-box {
+    border-width: 1px;
+    border-style: solid;
+    border-color: #e6e6e6;    
+    border-top: none;
+}
+
+/* 设置列表头部栏按钮，右对齐。（默认是左对齐） */
+.layui-table-tool .layui-btn-container {
+	text-align: right;
+}
+
+/* 设置树列表头部栏白色背景，去掉边框，重设内偏离对齐 */
+.ew-tree-table-tool{
+	background-color: white;
+    padding:3px 15px 10px;
+}
+.ew-tree-table-tool .layui-btn-container {
+	text-align: right;
+}
+
+/* 设置列表底部分页，右对齐。（默认是左对齐） */
+.layui-table-page {
+	text-align: right;
+}
+
+/* 设置列表操作栏的按钮垂直居中对齐 */
+.layui-table .layui-btn-container .layui-btn {
+    margin-bottom: 0px;
+}
+
+/* 表单  label宽度 */
+.layui-form[wid120] .layui-form-label{width: 120px;}
+.layui-form[wid120] .layui-input-block{margin-left: 150px;}
+
+
+/* 表单的元素布局，设置右外边距，以便同行的提示留有间隙 */
+.layui-input-block .layui-input-inline {
+    margin-right: 10px;
+}
+/* layui-form-mid右边不要留空 */
+.layui-input-block .layui-input-inline .layui-form-mid {
+    margin-right: 0px;
+}
+
+.dtree-select { 
+    z-index: 901;
+}
+
+.layui-upload-img {
+	cursor: pointer;
+}

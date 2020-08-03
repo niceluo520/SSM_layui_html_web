@@ -1,0 +1,4 @@
+
+layui   layui-v2.5.4
+jquery  jquery-1.11.2  --单独引入，以方便直接使用jquery的功能
+layer  layer-v3.1.1   --不能与layui共用，因此在layui模式不引入。

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.business.system.user.userlogin.dao.SysResourceMapper">
+
+	<!-- 获取菜单资源-->
+	<select id="getMenuResources" resultType="com.cbox.business.system.user.userlogin.bean.SysResourceVO">
+		SELECT t1.* from s_sysresource t1 
+		where t1.rec_status='1' and type in ('module','menu')
+		order by t1.parent_id ,t1.sort
+	</select>
+	
+	<!-- 获取按钮资源 -->
+	<select id="getBtnResources" resultType="com.cbox.business.system.user.userlogin.bean.SysResourceVO">
+		SELECT t1.* from s_sysresource t1 
+		where t1.rec_status='1' and type='button'
+		order by t1.parent_id
+	</select>
+	
+	<!-- 获取角色列表-->
+	<select id="getResourcesByRoles" resultType="com.cbox.business.system.user.userlogin.bean.SysRoleResourceVO">
+		select t1.* from s_sysrole_resource t1 
+		where t1.rec_status='1' 
+		<if test="roleIds!=null and roleIds.size()>0">
+      	and t1.role_id in 
+        <foreach collection="roleIds" index="index" item="item" open="(" separator="," close=")"> 
+            #{item} 
+        </foreach> 
+      </if>
+	</select>
+		
+</mapper>

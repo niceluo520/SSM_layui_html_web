@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta charset="utf-8" />
+<title>SSM架构源码示例平台</title>
+<meta name="description" content="User login page" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<link rel="shortcut icon" href="${ctx.contextPath}/static/images/favicon.ico">
+<link href="${ctx.contextPath}/static/js/lib/layui/css/layui.css" media="all" rel="stylesheet" type="text/css" />
+
+<!-- 引入公共js、css -->
+<script type="text/javascript" src="${ctx.contextPath}/static/js/lib/jquery/jquery-1.11.2.min.js"></script>
+<script type="text/javascript" src="${ctx.contextPath}/static/js/lib/rsa/RSA.js"></script>
+<script type="text/javascript" src="${ctx.contextPath}/static/js/lib/rsa/BigInt.js"></script>
+<script type="text/javascript" src="${ctx.contextPath}/static/js/lib/rsa/Barrett.js"></script>
+<!-- layui -->
+<script type="text/javascript" src="${ctx.contextPath}/static/js/lib/layui/layui.all.js"></script>
+<script type="text/javascript">
+	 var contextPath = "${ctx.contextPath}";
+	// 页面初始化，本处使用定时器处理
+	// 如果使用onload或者jquery的$(document).read(function(){...});未必能达到效果。因地制宜。
+	var initScript = setInterval(function() {
+		// 针对iframe嵌套的情况
+		if (window.top != null && window.top.document.URL != document.URL) {
+			clearInterval(initScript);
+			window.top.location.href = document.URL;
+		}
+	}, 400);
+</script>
+</head>
+<style>
+body {
+	margin: 0;
+	padding: 0;
+	width: 100vw;
+	height: 100vh;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+	background: url('${ctx.contextPath}/static/images/LoginBackground.jpg');
+	background-size: cover;
+}
+
+.login {
+	margin: 0;
+	padding: 0;
+	background: #fff;
+	box-shadow: 0 0 30px rgba(66, 64, 64, 0.4);
+	min-width: 380px;
+	min-height: 320px;
+	border-radius: 3px; --formbox: 45px;
+}
+
+.login input {
+	outline: none;
+}
+
+.logo {
+	padding: 25px 20px 10px 20px;
+	display: flex;
+	justify-content: center;
+	align-content: center;
+	align-items: center;
+	font-size: 32px;
+	font-weight: bold;
+}
+
+.logo .pic {
+	margin: 0 5px;
+	display: flex;
+	align-items: center;
+}
+
+.logo .text p {
+	margin: 0;
+	padding: 0;
+}
+
+.form {
+	margin: 0 20px 20px 20px;
+	padding: 0;
+	list-style: none;
+}
+
+.form li {
+	margin-top: 15px;
+	display: flex;
+	flex-direction: column;
+}
+
+.form li span {
+	font-size: 13px;
+	color: rgba(0, 0, 0, .6);
+	display: none;
+}
+
+.form input {
+	border: none;
+}
+
+.form .box {
+	margin: 0;
+	padding: 0;
+	display: flex;
+	justify-content: stretch;
+	align-items: stretch;
+	height: var(--formbox);
+	border: 1px solid rgb(196, 199, 202);
+}
+
+.form .box:hover {
+	border: 1px solid rgb(33, 134, 206);
+}
+
+.form .box .icon {
+	width: var(--formbox);
+	height: var(--formbox);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-basis: var(--formbox);
+}
+
+.form .box input::-webkit-input-placeholder {
+	font-size: 13px;
+	font-weight: normal;
+}
+
+.form .box input {
+	flex-grow: 1;
+	font-size: 14px;
+	font-weight: bold;
+}
+
+.btn {
+	padding: 0 20px 20px 20px;
+}
+
+.submit {
+	display: block;
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	outline: none;
+	height: 50px;
+	border: none;
+	border-radius: 3px;
+	background: rgb(47, 118, 248);
+	color: #fff;
+	font-size: 16px;
+	cursor: pointer;
+}
+
+.submit:hover {
+	background: rgb(26, 96, 226);
+}
+
+.info {
+	margin: 10px;
+	color: red;
+	text-align: center;
+}
+
+.footer {
+	margin: 20px;
+}
+
+.alert-warning {
+	background-color: #fcf8e3;
+	color: #8a6d3b;
+	font-size: 14px;
+	padding: 15px;
+	border: 1px solid #faebcc;
+}
+
+.alert-warning a {
+	color: #8a6d3b;
+	text-decoration: underline;
+}
+</style>
+<body>
+	<div class="header"></div>
+	<div class="login">
+		<div class="logo">
+			<div class="pic">
+				<img src="${ctx.contextPath}/static/images/logo.png" height="42px">
+			</div>
+			<div class="text">
+				SSSM架构示例平台
+			</div>
+		</div>
+		<!--登录表单-->
+		<input type="hidden" id="empoent" name="empoent" value="${rsa_empoent}" />
+		<input type="hidden" id="module" name="module" value="${rsa_module}" />
+		<form id="loginForm" method="post">
+			<input id="J_accountId" name="accountId" type="hidden" /> 
+			<input id="J_password" name="password" type="hidden" />
+			<ul class="form">
+				<li><span>用户名：</span>
+					<div class="box">
+						<div class="icon">
+							<img src="${ctx.contextPath}/static/images/user.png" width="33px" height="33px">
+						</div>
+						<input type="text" placeholder="请输入您的账号" id="loginAcc" maxlength="16"  value=''/>
+					</div></li>
+				<li><span>密码：</span>
+					<div class="box">
+						<div class="icon">
+							<img src="${ctx.contextPath}/static/images/password.png" width="23px" height="23px">
+						</div>
+						<input type="password" autocomplete="off" placeholder="请输入您的密码" id="loginPass" maxlength="18"  value=''/>
+					</div></li>
+				<li>
+					<span>验证码：</span>
+					<div class="box">
+						<div class="icon">
+							<img src="${ctx.contextPath}/static/images/key.png" width="22px" height="22px">
+						</div>
+						<input id="veryCode" name="veryCode" type="text" placeholder="请输入您的验证码" /> <a href="#" style="margin-top: 4px;">
+							<img id="imgObj" src="${ctx.contextPath}/verycode/getImgCode" onClick="changeImg()">
+						</a>
+					</div>
+				</li>
+			</ul>
+			<div class="info"></div>
+			<div class="btn">
+				<button type="button" class="submit" onClick="doLogin()">登录系统</button>
+			</div>
+		</form>
+	</div>
+	<div class="footer"></div>
+	
+	<script type="text/javascript" src="${ctx.contextPath}/static/js/common/utils.js"></script>
+	<script type="text/javascript">
+		<!-- Enter 触发提交 -->
+		document.onkeydown = keyDownEnter;
+		function keyDownEnter(e) {
+			var currEvent = e || event;
+			if (currEvent.keyCode == 13) {
+				doLogin();
+			}
+		}
+		
+		function doLogin() {
+			var accountId = $("#loginAcc").val();
+			var password = $("#loginPass").val();
+			var veryCode = $("#veryCode").val();
+			if (Utils.isNull(accountId)) {
+				parent.layer.msg("请输入账号", {
+					icon : 2,
+					time : 2000
+				});
+				$('#loginAcc').focus();
+				return;
+			}
+			if (Utils.isNull(password)) {
+				parent.layer.msg("请输入密码", {
+					icon : 2,
+					time : 2000
+				});
+				$('#loginPass').focus();
+				return;
+			}
+			//if (Utils.isNull(veryCode)) {
+			//	parent.layer.msg("请输入验证码", {
+			//		icon : 2,
+			//		time : 2000
+			//	});
+			//	$('#veryCode').focus();
+			//	return;
+			//} 
+			
+			//加密
+			$("#J_accountId").val(rsaResult(accountId));
+			$("#J_password").val(rsaResult(password));
+			
+			layer.msg('登录中，请稍等...', {
+				icon : 16,//信息框和加载层的私有参数
+				shade : 0.01,
+				time : 0,//自动关闭的时间 也可以通过layer.closeAll();来关闭所有弹层
+			});
+			
+			$.ajax({
+				url : contextPath + "/login/doLogin",
+				type : "post",
+				dataType : "json",
+				data : $("#loginForm").serialize(),
+				success : function(res) {
+					layer.closeAll();
+					if (res.retCode == 0) {
+						if (Utils.isNotNull(res.retData)){
+							var data=res.retData;							
+							
+							if("0"===data.login_status){
+								//首次登录，跳转修改密码页面
+								window.top.location.href = contextPath + '/login/first';
+							}else{
+								window.top.location.href = contextPath + '/home';
+							}
+						}
+					} else {
+						parent.layer.msg(res.retMsg, {
+							icon : 2,
+							time : 2000
+						});
+						changeImg();//更新验证码
+						$('#veryCode').val('');
+					}
+				},
+				error : function(xhr, data, setting) {
+					layer.closeAll();
+					$("#loginAcc").val(a);//回填
+					$("#loginPass").val("");//回填
+					parent.layer.msg("请求出现异常", {
+						icon : 2,
+						time : 2000
+					});
+				}
+			});
+		}
+		
+		/** RSA加密 */
+		function rsaResult(value) {
+			setMaxDigits(130);
+			value = encodeURI(value);
+			var empoent = $('#empoent') ? $('#empoent').val() : "";
+			var module = $('#module') ? $('#module').val() : "";
+			var key = new RSAKeyPair(empoent, "", module);
+			return encryptedString(key, value);
+		}
+
+		/** 验证码 */
+		function changeImg() {
+			var imgSrc = $("#imgObj");
+			var src = imgSrc.attr("src");
+			imgSrc.attr("src", chgUrl(src));
+		}		
+		//为了使每次生成图片不一致，即不让浏览器读缓存，所以需要加上时间戳
+		function chgUrl(url) {
+			var timestamp = (new Date()).valueOf();
+			urlurl = url.substring(0, 17);
+			if ((url.indexOf("&") >= 0)) {
+				urlurl = url + "×tamp=" + timestamp;
+			} else {
+				urlurl = url + "?timestamp=" + timestamp;
+			}
+			return urlurl;
+		}
+	</script>
+
+</body>
+</html>

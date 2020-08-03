@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.business.common.dictionary.dao.TreeDictMapper">
+	<select id="getTreeNodeAreaTree" parameterType="java.util.Map" resultType="com.cbox.business.common.page.bean.BaseTreeVO">
+		<![CDATA[
+			SELECT a.area_code id,a.area_code code,a.area_sname name,a.area_lname area_all_name,b.area_code parent_id,a.sort
+			FROM s_sysarea a
+			LEFT JOIN s_sysarea b ON a.parent_recid=b.area_code
+			WHERE a.rec_status='1'
+			ORDER BY parent_id ASC
+		]]>
+	</select>
+    
+    <select id="getTreeForResource" parameterType="java.util.Map" resultType="com.cbox.business.common.page.bean.BaseTreeVO">
+        <![CDATA[
+            SELECT a.rec_id id,a.name name,a.parent_id,a.sort
+            FROM s_sysresource a
+            WHERE a.rec_status='1' and type!='button'
+            ORDER BY sort ASC
+        ]]>
+    </select>
+	
+</mapper>

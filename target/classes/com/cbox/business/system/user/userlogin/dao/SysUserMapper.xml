@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.business.system.user.userlogin.dao.SysUserMapper">
+	
+	<!-- 获取用户信息 -->
+	<select id="querySysUser" parameterType="hashmap" resultType="com.cbox.business.system.user.userlogin.bean.SysUserVO">
+		select
+			cast(rec_id as char) rec_id,
+			cast(user_id as char) user_id,
+			user_name,
+			mobile_phone,
+			is_admin,
+			sex,
+			h_img,
+			cast(organization_id as char) organization_id,
+			cast(area_code as char) area_code,
+			locked,
+			user_level,
+			password,
+			salt,
+			login_status,
+			email
+		from s_sysuser
+		where rec_status = '1'
+		<if test="user_id != null and user_id != ''">
+			and user_id = #{user_id}
+		</if>
+		<if test="password != null and password != ''">
+			and password = #{password}
+		</if>
+		<if test="rec_id != null and rec_id  != ''">
+	   		and a.rec_id = #{rec_id}
+	   </if>
+	</select>
+	
+</mapper>

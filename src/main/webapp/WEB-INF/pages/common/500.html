@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<title>500内部服务器</title>
+<link href="${ctx.contextPath}/static/js/lib/layui/css/layui.css" media="all" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="${ctx.contextPath}/static/css/mainframe.css" media="all">
+<script type="text/javascript" src="${ctx.contextPath}/static/js/lib/jquery/jquery-1.11.2.min.js"></script>
+</head>
+<body>
+	<div class="layui-fluid">
+		<div class="layadmin-tips">
+			<i class="layui-icon" face>&#xe664;</i>
+			<div class="layui-text" style="font-size: 20px;">
+				<h3>
+					500 系统出现致命错误
+					<a href="javascript:showErrorMsg()">显示/隐藏错误信息</a>
+				</h3>
+				<hr>
+				<div style="display: none;" id="retMsg">${errorMsg}</div>
+				<hr>
+				<div class="center">
+					<a class='layui-btn ext-btn-radius' href="javascript:backHome()"> 返回 </a>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+    //function backHome() {
+    //  window.top.location = "<%=request.getContextPath()%>/home";
+    //}
+    function backHome(){
+    	history.go(-1);
+    }
+    function showErrorMsg() {
+        var node = $('#retMsg');
+        if (node.is(':hidden')) {
+            node.show();
+        } else {
+            node.hide();
+        }
+    }
+</script>
+</html>

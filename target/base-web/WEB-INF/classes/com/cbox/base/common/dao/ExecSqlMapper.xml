@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.base.common.dao.ExecSqlMapper">
+	<!-- 保存 -->
+	<update id="save" parameterType="java.lang.String">
+		${execSql}
+	</update>
+
+	<!-- 更新 -->
+	<update id="update" parameterType="java.lang.String">
+		${execSql}
+	</update>
+
+	<!-- 删除 -->
+	<update id="delete" parameterType="java.lang.String">
+		${execSql}
+	</update>
+	
+	<!-- 查询 -->
+	<select id="selectList" parameterType="java.lang.String" resultType="java.util.HashMap">
+		${execSql}
+	</select>
+	
+	<!-- 查询 -->
+	<select id="selectMap" parameterType="java.lang.String" resultType="java.util.HashMap">
+		${execSql}
+	</select>
+	
+	<!-- 查询总记录数 -->
+	<select id="selectCount" parameterType="java.lang.String" resultType="java.lang.Integer">
+		${execSql}
+	</select>
+	
+</mapper> 

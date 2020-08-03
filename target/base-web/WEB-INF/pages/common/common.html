@@ -1,0 +1,83 @@
+<meta http-equiv="Cache-Control" content="no-cache, no-store" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" CONTENT="0">
+<script type="text/javascript">
+    /**公共变量定义*/
+    var basePath = '${ctx.contextPath}';//工程路径
+    var fileShowPath = '${fileShowPath}';//文件查看路径
+    var suffixShowPath = '${suffixShowPath}';//扩展名图片查看路径
+    var fileDownloadPath='${fileDownloadPath}';//文件下载路径
+    
+    var storageUrl = window.location.pathname;//本地存储的url
+    
+    var bShowAjaxLoading=true;//是否展示ajax的loading，默认为展示。个别特殊元素通过此参数屏蔽全局loading
+</script>
+
+<!-- jquery，(引入jquery，在js中可以直接使用$.  )-->
+<script type="text/javascript" src="${ctx.contextPath}/static/js/lib/jquery/jquery-1.11.2.min.js"></script>
+
+<!-- layui -->
+<script type="text/javascript" src="${ctx.contextPath}/static/js/lib/layui/layui.all.js"></script>
+<link href="${ctx.contextPath}/static/js/lib/layui/css/layui.css" media="all" rel="stylesheet" type="text/css" />
+<link href="${ctx.contextPath}/static/js/lib/layui/icon/icon.css" media="all" rel="stylesheet" type="text/css" />
+
+<!-- dtree -->
+<link rel="stylesheet" href="${ctx.contextPath}/static/js/lib/layuilib/extend/dtree/dtree.css" />
+<link rel="stylesheet" href="${ctx.contextPath}/static/js/lib/layuilib/extend/dtree/font/dtreefont.css" />
+
+<!-- 富文本编辑器 -->
+<script type="text/javascript" src="${ctx.contextPath}/static/js/lib/wangeditor/wangEditor.js"></script>
+
+<!-- cropper 图片裁剪  -->
+<link rel="stylesheet" href="${ctx.contextPath}/static/js/lib/layuilib/extend/cropper/cropper.css" />
+
+
+<!-- 自定义公共js -->
+<script type="text/javascript" src="${ctx.contextPath}/static/js/common/common.js"></script>
+<script type="text/javascript" src="${ctx.contextPath}/static/js/common/common_layer.js"></script>
+<script type="text/javascript" src="${ctx.contextPath}/static/js/common/utils.js"></script>
+
+<!-- 自定义样式 -->
+<link href="${ctx.contextPath}/static/css/mainframe.css" media="all" rel="stylesheet" type="text/css" />
+<link href="${ctx.contextPath}/static/css/resetlayui.css" media="all" rel="stylesheet" type="text/css" />
+<link href="${ctx.contextPath}/static/css/extend.css" media="all" rel="stylesheet" type="text/css" />
+
+<script type="text/javascript">
+    /**设置全局ajax loading**/
+    $(function() {
+        
+        var layer = layui.layer;
+
+        $.ajaxSetup({
+            layerIndex : -1,
+            contentType : "application/x-www-form-urlencoded;charset=utf-8",
+            beforeSend : function(request) {
+                if(bShowAjaxLoading){//控制是否展示loading
+            		this.layerIndex = parent.layer.load(0, {shade : false});//默认风格，无遮罩
+            	}
+            },
+            complete : function(xhr, textStatus) {
+                parent.layer.close(this.layerIndex);
+                //mgrPermissions();
+                var sessionStatus = xhr.getResponseHeader('SessionStatus');
+                if (sessionStatus && sessionStatus === 'sessionTimeOut') {
+                    window.location = "${ctx.contextPath}/login/index";//返回应用登录
+                    return;
+                }
+            },
+            error : function() {
+                parent.layer.close(this.layerIndex);
+                layer.alert('部分数据加载失败，可能会导致页面显示异常，请刷新后重试', {
+                    skin : 'layui-layer-molv',
+                    closeBtn : 0,
+                    shift : 4 //动画类型                
+                });
+            }
+        });
+    });
+    
+    //设置layui的静态资源路径
+    layui.config({
+    	base: '${ctx.contextPath}/static/js/lib/' 
+  	});
+</script>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>用户管理-列表</title>
+<#include '../../../../common/common.html'/>
+</head>
+<body>
+
+<!-- 页面内容 -->
+<div class='layui-fluid'>
+
+	<!-- 页面隐藏变量 -->
+	<input type='hidden' name='pageRecId' id='pageRecId' value='' />
+	<input type='hidden' name='prePageParam' id='prePageParam' value='' />
+	<input type='hidden' name='hasPrePage' id='hasPrePage' value='' />
+
+	<!-- 组件1:cpType='list',cpName='用户列表' -->
+	<div class='layui-card' id='cp_list0'   style='flex:auto;'>
+		<!--查询条件：用户查询列表-->
+		<div class='layui-card-header layui-form layuiadmin-card-header-auto'>
+			<form id='sform_list0' method='post' action='javascript:return true;' role='form'>
+				<div class='layui-form-item'>
+					<div id='layout_user_name' class='layui-inline'>
+						<label class='layui-form-label'>姓名：</label>
+						<div class='layui-input-block'>
+							<input class='layui-input' type='text' id='user_name' name='user_name'/>
+						</div>
+					</div>
+					<div id='layout_locked' class='layui-inline'>
+						<label class='layui-form-label'>用户状态：</label>
+						<div class='layui-input-block'>
+							<select id='locked' name='locked' lay-filter='locked'>
+								<option value=''>请选择</option>
+								<option value='1'>正常</option>
+								<option value='0'>锁定</option>
+							</select>
+						</div>
+					</div>
+					<div id='layout_locked' class='layui-inline'>
+						<label class='layui-form-label'>学历：</label>
+						<div class='layui-input-block'>
+							<select id='edu_code' name='edu_code' lay-filter='edu_code'>
+							</select>
+						</div>
+					</div>
+					
+					<div class='layui-inline'>
+						<button type='button' class='layui-btn ext-btn-radius' style='margin-left:20px;' onclick='cp_sform_list0.search();' >
+							<i class='layui-icon layui-icon-search layuiadmin-button-btn'></i>
+						</button>
+					</div>
+					<div class='layui-inline'>
+						<button type='button' class='layui-btn layui-btn-primary ext-btn-radius' onclick='cp_sform_list0.resetSearch();' >
+							<i class='layui-icon layui-icon-zzrotate-left layuiadmin-button-btn'></i>
+						</button>
+					</div>
+				</div>
+			</form>
+		</div>
+		<!--列表：用户查询列表-->
+		<div class='layui-card-body'>
+			<table id='table_list0' lay-filter='table_list0' class='layui-table' style='margin-bottom: 0;'></table>
+			
+			<!-- 性别sex模板  -->
+			<script id="sexTpl" type="text/html">
+				{{#  if(d.sex=='男'){ }}
+	 				<span style="color:#0000ff;">{{ d.sex }}</span>
+				{{#  } else if(d.sex=='女'){ }}
+	 				<span style="color:#ff0000;">{{ d.sex }}</span>
+				{{#  } }}
+			</script>
+			<!--头部按钮-->
+			<script type='text/html' id='topbarTpl_list0'>
+				<div class='layui-btn-container'>
+					<button  class='layui-btn ext-btn-radius' lay-event='add'  authid='userlist_toAdd' ><i class='layui-icon layui-icon-zzplus-circle'></i>新增</button>
+					<button  class='layui-btn layui-btn-primary ext-btn-radius' lay-event='del' authid='userlist_toDelete' ><i class='layui-icon layui-icon-delete'></i>删除</button>
+				</div>
+			</script>
+
+			<!--行尾按钮-->
+			<script type='text/html' id='colbarTpl_list0'>
+				<div class='layui-btn-container'>
+					<button  class='layui-btn layui-btn-xs' lay-event='update'  authid='userlist_toUpdate'  ><i class='layui-icon layui-icon-edit'></i>修改</button>
+					<button  class='layui-btn layui-btn-xs' lay-event='view'  ><i class='layui-icon layui-icon-zzinfo-circle'></i>查看</button>
+				</div>
+			</script>
+		</div>
+	</div>
+</div><!-- End layui-fluid -->
+
+</body>
+
+<script type='text/javascript' src='${ctx.contextPath}/myResources/business/system/user/userlist/js/cp_sform_list0.js'></script>
+<script type='text/javascript' src='${ctx.contextPath}/myResources/business/system/user/userlist/js/cp_list0.js'></script>
+
+<script type="text/javascript">
+	/* layer弹框的返回标识 */
+	var popupIndex;
+	
+	/* 获取服务端返回值，设置页面的隐藏变量 */
+	var recId  = '${pageRecId!""}';
+	$("#pageRecId").val(recId);// 页面的数据id
+	$("#prePageParam").val('${prePageParam!""}'); // 前置页面传递的参数
+	$("#hasPrePage").val('${hasPrePage!""}');// 是否有前置页面
+
+	/* 组件初始化  */
+	// 载入extend组件
+	layui.extend({
+		dtree: 'layuilib/extend/dtree/dtree' //dtree组件
+	}).use(['dtree'], function () {
+		//组件初始化
+		//cp_list0定义在cp_list0.js中
+		//cp_sform_list0定义在cp_sform_list0.js中
+		
+		cp_sform_list0.initCallBack = function (){
+						
+			cp_list0.init();			
+			
+		};
+		cp_sform_list0.init();
+
+		layui.form.render();
+	});
+
+	
+	
+</script>
+</html>

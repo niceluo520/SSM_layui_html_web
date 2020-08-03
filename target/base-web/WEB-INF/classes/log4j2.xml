@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- status : 这个用于设置log4j2自身内部的信息输出,可以不设置,当设置成trace时,会看到log4j2内部各种详细输出 monitorInterval : Log4j能够自动检测修改配置文件和重新配置本身, 设置间隔秒数。 -->
+<Configuration status="OFF" monitorInterval="1800">
+    <properties>
+        <property name="LOG_HOME">D:\develop\logs\workspace-cbox\logs</property>
+        <property name="FILE_NAME">base-web</property>
+    </properties>
+
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+        </Console>
+
+        <RollingFile name="running-log" fileName="${LOG_HOME}/${FILE_NAME}.log" filePattern="${LOG_HOME}/$${date:yyyy-MM}/${FILE_NAME}-%d{yyyy-MM-dd}-%i.log.gz"
+            immediateFlush="true">
+            <PatternLayout pattern="%date{yyyy-MM-dd HH:mm:ss.SSS} %level [%thread][%file:%line] - %msg%n" />
+            <Policies>
+                <TimeBasedTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="100 MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="30" />
+        </RollingFile>
+
+        <!--错误日志输出 -->
+        <RollingRandomAccessFile name="error-log" fileName="${LOG_HOME}/r${FILE_NAME}-error.log"
+            filePattern="${LOG_HOME}/$${date:yyyy-MM}/${FILE_NAME}-error-%d{yyyy-MM-dd}-%i.log">
+            <Filters>
+                <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY" />
+            </Filters>
+            <PatternLayout pattern="%date{yyyy-MM-dd HH:mm:ss.SSS} %level [%thread][%file:%line] - %msg%n" />
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" />
+                <SizeBasedTriggeringPolicy size="100 MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="30" />
+        </RollingRandomAccessFile>
+    </Appenders>
+
+    <Loggers>
+
+        <Root level="debug">
+            <!-- 这里是输入到文件，很重要 -->
+            <AppenderRef ref="running-log" />
+            <AppenderRef ref="error-log" />
+            <!-- 这里是输入到控制台 -->
+            <AppenderRef ref="Console" />
+        </Root>
+    </Loggers>
+</Configuration>

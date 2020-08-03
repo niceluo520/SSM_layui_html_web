@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>查看用户信息</title>
+<#include '../../../../common/common.html'/>
+
+<script type='text/javascript' src='${ctx.contextPath}/myResources/business/system/user/userform/js/cp_oformView.js'></script>
+
+</head>
+<body>
+	
+<!-- 页面隐藏变量(放在form中方便提交时获取) -->
+<form id='pageForm' method='post' action='javascript:return true;' class='form-horizontal' role='form'>
+	<input type='hidden' name='pageRecId' id='pageRecId' value='' />
+</form>
+
+<!-- 页面内容 -->
+<div class='layui-fluid'>
+
+	<!-- 组件1:cpType='oform',cpName='用户表单' -->
+	<div class='layui-card' id='cp_oform'   style='flex:auto;'>
+		<div class='layui-card-header'>查看用户信息</div>
+		<div class='layui-card-body' style='padding: 15px;'>
+			<form class='layui-form' id='oform' wid100 lay-filter='component-form-group' method='post' action='javascript:return true;' role='form'>
+				<div class='layui-row layui-col-space10' id='layout_vsort_user_id'>
+					<div class='layui-col-md12' >
+						<label class='layui-form-label' ><span style='color:red;'>*</span>用户id：</label>
+						<div class='layui-input-block'>
+							<div class='layui-input-inline' >
+								<label class='layui-form-mid' id='user_id' name='user_id' lay-filter='user_id'></label>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class='layui-row layui-col-space10' id='layout_hsort2'>
+					<div class='layui-col-md6' >
+						<label class='layui-form-label' ><span style='color:red;'>*</span>姓名：</label>
+						<div class='layui-input-block'>
+							<div class='layui-input-inline' >
+								<label class='layui-form-mid' id='user_name' name='user_name' lay-filter='user_name'></label>
+							</div>
+						</div>
+					</div>
+					<div class='layui-col-md6' >
+						<label class='layui-form-label' ><span style='color:red;'>*</span>性别：</label>
+						<div class='layui-input-block'>
+							<div class='layui-input-inline' >
+								<div id='sex'>
+									<label class='layui-form-mid' name='sex' value='1' style='display: none;' >男</label>
+									<label class='layui-form-mid' name='sex' value='0' style='display: none;' >女</label>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class='layui-row layui-col-space10' id='layout_hsort3'>
+					<div class='layui-col-md6' >
+						<label class='layui-form-label' ><span style='color:red;'>*</span>手机号码：</label>
+						<div class='layui-input-block'>
+							<div class='layui-input-inline' >
+								<label class='layui-form-mid' id='mobile_phone' name='mobile_phone' lay-filter='mobile_phone'></label>
+							</div>
+						</div>
+					</div>
+					<div class='layui-col-md6' >
+						<label class='layui-form-label' ><span style='color:red;'>*</span>Email：</label>
+						<div class='layui-input-block'>
+							<div class='layui-input-inline' >
+								<label class='layui-form-mid' id='email' name='email' lay-filter='email'></label>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class='layui-row layui-col-space10' id='layout_hsort4'>
+					<div class='layui-col-md6' >
+						<label class='layui-form-label' ><span style='color:red;'>*</span>籍贯：</label>
+						<div class='layui-input-block'>
+							<div class='layui-input-inline' >
+								<input type='hidden' id='area_code' name='area_code'/>
+								<label class='layui-form-mid' id='view_area_code'></label>
+							</div>
+						</div>
+					</div>
+					<div class='layui-col-md6' >
+						<label class='layui-form-label' ><span style='color:red;'>*</span>是否管理员：</label>
+						<div class='layui-input-block'>
+							<div class='layui-input-inline' >
+								<div id='is_admin' >
+								<label class='layui-form-mid' name='is_admin' value='1' style='display: none;' >是</label>
+								<label class='layui-form-mid' name='is_admin' value='0' style='display: none;' >否</label>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class='layui-row layui-col-space10' id='layout_hsort5'>
+					<div class='layui-col-md6' >
+						<label class='layui-form-label' ><span style='color:red;'>*</span>用户状态：</label>
+						<div class='layui-input-block'>
+							<div class='layui-input-inline' >
+								<div id='locked' >
+								<label class='layui-form-mid' name='locked' value='1' style='display: none;' >正常</label>
+								<label class='layui-form-mid' name='locked' value='0' style='display: none;' >锁定</label>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class='layui-col-md6' >
+						<label class='layui-form-label' ><span style='color:red;'>*</span>用户角色：</label>
+						<div class='layui-input-block'>
+							<div class='layui-input-inline' >
+								<div id='role_id' >
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class='layui-row layui-col-space10' id='layout_vsort_h_img'>
+					<div class='layui-col-md12' >
+						<label class='layui-form-label' ><span style='color:red;'>*</span>用户头像：</label>
+						<div class='layui-input-block'>
+							<div class='layui-input-inline' style='width:100%'>
+								<input type='hidden' id='h_img' name='h_img'/>
+								<img id='imgShow_h_img' class='layui-upload-img ext-img-thumbnail-show' onclick='cp_oform.imgviewer_h_img(this)'>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class='layui-row layui-col-space10' id='layout_vsort_person_sign'>
+					<div class='layui-col-md12' >
+						<label class='layui-form-label' ><span style='color:red;'>*</span>附件：</label>
+						<div class='layui-input-block'>
+							<div class='layui-input-inline' >
+								<input type='hidden' id='person_sign' name='person_sign'/>
+								<div class='layui-upload-list' id='fileShow_person_sign'></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div class='layui-form-item layui-layout-admin'>
+					<div class='layui-input-black'>
+						<div class='layui-footer' style='position:static;'>
+							<button type='button' class='layui-btn layui-btn-primary' id='backBtn' onclick="closePLayer();"><i class='layui-icon layui-icon-return'></i>返回</button>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div><!-- End layui-fluid -->
+
+</body>
+	
+<script type="text/javascript">
+	//layer弹框的返回标识
+	var index;
+	
+	// 主键ID
+	var recId  = '${pageRecId!""}';//从服务端返回的值
+	$("#pageRecId").val(recId);
+	
+	
+	layui.extend({
+		imgviewer: 'layuilib/extend/imgviewer' //图片查看器
+		,croppers: 'layuilib/extend/cropper/croppers' //图片截图
+	}).use(['imgviewer','croppers'], function () {
+		//组件初始化
+		//cp_oform定义在cp_oform.js中
+		
+		cp_oform.init();
+
+		layui.form.render();
+	});
+
+
+	
+</script>
+</html>

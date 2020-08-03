@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.base.common.dao.BaseCRUDMapper">
+	<!-- 保存 -->
+	<update id="save" parameterType="java.util.Map">
+		insert into `${tableName}`(
+		rec_status,
+		rec_time,
+		<foreach collection="params" index="field" item="fieldvalue" separator=",">
+			<if test="fieldvalue != null">
+				`${field}`
+			</if>
+		</foreach>
+		)
+	
+		values(
+		'1',
+		now(),
+		<foreach collection="params" item="fieldvalue" separator=",">
+			<if test="fieldvalue != null">
+				#{fieldvalue}
+			</if>
+		</foreach>
+		)
+	</update>
+
+	<!-- 更新 -->
+	<update id="update" parameterType="java.util.Map">
+
+			update `${tableName}`
+			set
+			rec_updatetime = now(),
+			<foreach collection="params" index="field" item="fieldvalue"
+				separator=",">
+				<if test="fieldvalue != null">
+					`${field}` = #{fieldvalue}
+				</if>
+			</foreach>
+			where
+			rec_id = #{rec_id}
+	</update>
+	
+	<!-- 更新带条件 -->
+	<update id="updateConditions" parameterType="java.util.Map">
+
+			update `${tableName}`
+			set
+			rec_updatetime = now(),
+			<foreach collection="params" index="field" item="fieldvalue"
+				separator=",">
+				<if test="fieldvalue != null">
+					`${field}` = #{fieldvalue}
+				</if>
+			</foreach>
+			where
+			<foreach collection="conditions" index="field" item="fieldvalue"
+				separator=" and ">
+				<if test="field == 'rec_id'">
+					`${field}` in (${fieldvalue})
+				</if>
+				<if test="fieldvalue != null and field != 'rec_id'">
+					`${field}` = #{fieldvalue}
+				</if>				
+			</foreach>
+	</update>
+
+	<!-- 逻辑删除 -->
+	<update id="delete" parameterType="java.util.Map">
+
+			update `${tableName}`
+			set 
+				rec_status = '2',
+				rec_updateperson = #{rec_updateperson},
+				rec_updatetime = now()
+			where
+			<foreach collection="params" index="field" item="fieldvalue"
+				separator=" and ">
+				<if test="field == 'rec_id'">
+					`${field}` in (${fieldvalue})
+				</if>
+				<if test="fieldvalue != null and field != 'rec_id'">
+					`${field}` = #{fieldvalue}
+				</if>
+			</foreach>
+
+	</update>
+	
+	<!-- 物理删除 -->
+	<delete id="deleteEmpty" parameterType="java.util.Map">
+		delete from `${tableName}`
+			where
+			<foreach collection="params" index="field" item="fieldvalue"
+				separator=" and ">
+				<if test="fieldvalue != null">
+					`${field}` = #{fieldvalue}
+				</if>
+			</foreach>
+	</delete>
+
+	<!-- 查询 -->
+	<select id="query" parameterType="java.util.Map" resultType="java.util.HashMap">
+			select 
+				cast(rec_id as char) rec_id,
+				`${tableName}`.*
+			from `${tableName}`
+			where <![CDATA[ rec_status <> '2' ]]>
+			<foreach collection="params" index="field" item="fieldvalue" open=" and "
+				separator=" and ">
+				<if test="field == 'rec_id'">
+					`${field}` in (${fieldvalue})
+				</if>
+				<if test="fieldvalue != null and field != 'rec_id'">
+					`${field}` = #{fieldvalue}
+				</if>				
+			</foreach>
+			<if test="noEqualParams!=null">
+				<foreach collection="noEqualParams" index="field" item="fieldvalue" open=" and "
+					separator=" and ">
+					<if test="fieldvalue != null">
+						<![CDATA[ `${field}` <> #{fieldvalue} ]]>
+					</if>
+					<if test="fieldvalue == null">
+						<![CDATA[ (`${field}` is NOT NULL and `${field}` <> '') ]]>
+					</if>								
+				</foreach>
+			</if>
+			order by
+			<if test="orders != null and orders != ''">
+				${orders},
+			</if>
+			 cast(rec_id as UNSIGNED) desc
+	</select>
+	
+		<!-- 模糊查询 -->
+	<select id="queryLike" parameterType="java.util.Map" resultType="java.util.HashMap">
+
+			select 
+				cast(rec_id as char) rec_id,
+				`${tableName}`.*
+			from `${tableName}`
+			where <![CDATA[ rec_status <> '2' ]]>
+			<foreach collection="params" index="field" item="fieldvalue" open=" and "
+				separator=" and ">
+				<if test="fieldvalue != null">
+					`${field}` like concat('%',#{fieldvalue},'%')
+				</if>
+			</foreach>
+
+	</select>
+	
+	<!-- 查询 -->
+	<select id="queryOne" parameterType="java.util.Map" resultType="java.util.HashMap">
+			select 
+			<if test="columns != null">
+				<foreach collection="columns" item="fieldvalue" 
+					separator=" , ">
+					<if test="fieldvalue == 'rec_id'">
+						cast(rec_id as char) rec_id
+					</if>
+					<if test="fieldvalue != null and fieldvalue != 'rec_id'">
+						`${fieldvalue}`
+					</if>				
+				</foreach>				
+			</if>
+			<if test="columns == null">
+				cast(rec_id as char) rec_id,
+				`${tableName}`.*
+			</if>		
+			from `${tableName}`
+			where <![CDATA[ rec_status <> '2' ]]>
+			<foreach collection="params" index="field" item="fieldvalue" open=" and "
+				separator=" and ">
+				<if test="fieldvalue != null">
+					`${field}` = #{fieldvalue}
+				</if>
+			</foreach>
+
+	</select>
+	
+	<!-- 查询总记录数 -->
+	<select id="count" parameterType="java.util.Map" resultType="java.lang.Integer">
+
+			select 
+				count(*)
+			from `${tableName}`
+			where <![CDATA[ rec_status <> '2' ]]>
+			<foreach collection="params" index="field" item="fieldvalue" open=" and "
+				separator=" and ">
+				<if test="fieldvalue != null">
+					`${field}` = #{fieldvalue}
+				</if>
+			</foreach>
+
+	</select>
+	<!-- 查询总记录数 -->
+	<select id="countLike" parameterType="java.util.Map" resultType="java.lang.Integer">
+
+			select 
+				count(*)
+			from `${tableName}`
+			where <![CDATA[ rec_status <> '2' ]]>
+			<foreach collection="params" index="field" item="fieldvalue" open=" and "
+				separator=" and ">
+				<if test="fieldvalue != null">
+					`${field}` like concat('%',#{fieldvalue},'%')
+				</if>
+			</foreach>
+
+	</select>
+	
+	<!-- 是否存在 -->
+	<select id="isExist" parameterType="java.util.Map" resultType="java.lang.Integer">
+			select 
+				count(*)
+			from `${tableName}`
+			where <![CDATA[ rec_status <> '2' ]]>
+			<foreach collection="params" index="field" item="fieldvalue" open=" and "
+				separator=" and ">
+				<if test="field == 'rec_id'">
+					`${field}` <![CDATA[<>]]> #{fieldvalue}
+				</if>
+				<if test="fieldvalue != null and field != 'rec_id'">
+					`${field}` = #{fieldvalue}
+				</if>				
+			</foreach>
+	</select>
+</mapper> 

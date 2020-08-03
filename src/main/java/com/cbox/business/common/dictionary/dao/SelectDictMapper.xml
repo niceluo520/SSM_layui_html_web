@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.business.common.dictionary.dao.SelectDictMapper">
+	<select id="getOptionAll_class" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<![CDATA[
+			select t.rec_id as value,t.classname as title from d_demo_class t
+		]]>
+	</select>
+	<select id="getOptionT_depart_t_classid" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<![CDATA[
+			select t.rec_id as value,t.classname as title from d_demo_class t where t.rec_status!='2' and t.belong_collage=#{departnameid} order by t.rec_id
+		]]>
+	</select>
+	<select id="getOptionT_depart_name" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<![CDATA[
+			SELECT t.rec_id as value, t.departname as title FROM d_demo_department t
+			where t.rec_status!='2'
+		]]>
+	</select>
+	<select id="getOptionSchoolname" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<![CDATA[
+			SELECT s.rec_id as value ,s.shoolname as title from d_demo_school  s where rec_status<> '2'
+		]]>
+	</select>
+	<select id="getOptionDepartment2" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<![CDATA[
+			SELECT
+			t.rec_id AS value,
+			t.departname AS title
+			FROM
+			d_demo_department t
+			WHERE t.rec_status <> 2
+			AND t.belong_schoolid = #{schoolname}
+			ORDER BY t.rec_id
+		]]>
+	</select>
+	<select id="getOptionDroiplist_course" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<![CDATA[
+			select t.rec_id as value,t.coursename as title from d_demo_course t where t.rec_status!='2'
+		]]>
+	</select>
+	<select id="getOptionUserRole" parameterType="java.util.Map" resultType="java.util.HashMap">
+		<![CDATA[
+			select t.rec_id as value,t.role_name as title from s_sysrole t where t.rec_status='1'
+		]]>
+	</select>
+    <select id="getOptionUserEdu" parameterType="java.util.Map" resultType="java.util.HashMap">
+        select t.edu_code as value,t.edu_name as title from s_user_education t where t.rec_status='1'
+    </select>
+    
+	
+</mapper>

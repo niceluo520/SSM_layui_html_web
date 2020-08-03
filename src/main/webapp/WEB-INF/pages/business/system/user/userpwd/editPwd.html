@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link href="${ctx.contextPath}/static/js/lib/layui/css/layui.css" media="all" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="${ctx.contextPath}/static/js/lib/jquery/jquery-1.11.2.min.js"></script>
+<!--RSA-->
+<script type="text/javascript" src="${ctx.contextPath}/static/js/lib/rsa/RSA.js"></script>
+<script type="text/javascript" src="${ctx.contextPath}/static/js/lib/rsa/BigInt.js"></script>
+<script type="text/javascript" src="${ctx.contextPath}/static/js/lib/rsa/Barrett.js"></script>
+</head>
+<body>
+	<div class="layui-fluid">
+		<div class="layui-row layui-col-space15">
+			<div class="layui-col-md12">
+				<div class="layui-card">
+					<div class="layui-card-header">修改密码</div>
+					<div class="layui-card-body" pad15>
+						<form class='layui-form' id='pwd_form' lay-filter='form' method='post'>
+							<div class="layui-form" lay-filter="">
+								<input type="hidden" id="empoent" name="empoent" value="${rsa_empoent}" />
+								<input type="hidden" id="module" name="module" value="${rsa_module}" />
+								<div class="layui-form-item">
+									<label class="layui-form-label">当前密码</label>
+									<div class="layui-input-inline">
+										<input type="password" id="oldPwd" name="oldPwd" placeholder="请输入当前密码" lay-verify="required" lay-reqText="当前密码不能为空!" lay-verType="tips" class="layui-input">
+									</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">新密码</label>
+									<div class="layui-input-inline">
+										<input type="password" id="newPwd" name="newPwd" placeholder="6-12位数字与字母的组合的新密码" maxlength="12" lay-verify="pass" lay-verType="tips" autocomplete="off" class="layui-input">
+									</div>
+									<div class="layui-form-mid layui-word-aux">6到16个字符</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">确认新密码</label>
+									<div class="layui-input-inline">
+										<input type="password" id="newPwdQr" name="newPwdQr" placeholder="请输入您的确认密码" maxlength="12" lay-verify="repass" lay-verType="tips" autocomplete="off" class="layui-input">
+									</div>
+								</div>
+								<div class="layui-form-item">
+									<div class="layui-input-block">
+										<button class="layui-btn" lay-submit lay-filter="go" onclick='doSubmit();return false;'>确认修改</button>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="${ctx.contextPath}/static/js/lib/layui/layui.all.js"></script>
+<script type="text/javascript">
+
+	var form;
+    $(function() {
+        form = layui.form;
+        //表单验证
+        form.verify({
+            pass : [ /^(?![\\d]+$)(?![a-zA-Z]+$)(?![^\\da-zA-Z]+$).{6,12}$/, '密码6-12位数字与字母的组合！' ],
+            repass : function(value, item) { //value：表单的值、item：表单的DOM对象
+                if (value != $("#newPwd").val()) {
+                    return '用户新密码与确认密码不一致！';
+                }
+            }
+        });
+    });
+
+    /** 弹出框自带的提交按钮回调 */
+    var lock = false;
+    function doSubmit(dom) {
+        if (lock) {
+            return;
+        }
+        lock = true;
+        form.on('submit(go)', function(data){
+            //在这里进行表单ajax提交
+            $.ajax({
+                type : "post",
+                traditional : true,
+                url : "${ctx.contextPath}/system/user/doEditPwd",
+                data : {
+                    'J_password' : rsaResult($("#oldPwd").val()),
+                    'J_newpassword' : rsaResult($("#newPwd").val())
+                },
+                success : function(data) {
+                    lock = false;
+                    var json = data
+                    if (json.retCode == 0) {
+                        layer.msg(json.retMsg, {
+                            icon : 1,
+                            time : 3000
+                        });
+                        $("#pwd_form")[0].reset();
+                    } else {
+                        layer.msg(json.retMsg, {
+                            icon : 2,
+                            time : 5000
+                        });
+                    }
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+    }
+
+    /** RSA加密 */
+    function rsaResult(value) {
+        setMaxDigits(130);
+        value = encodeURI(value);
+        var empoent = $('#empoent') ? $('#empoent').val() : "";
+        var module = $('#module') ? $('#module').val() : "";
+        var key = new RSAKeyPair(empoent, "", module);
+        return encryptedString(key, value);
+    }
+</script>
+</html>

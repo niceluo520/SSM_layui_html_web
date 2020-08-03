@@ -1,0 +1,23 @@
+/**
+
+ @Name：reset_top 重置layui头部栏风格的样式。resetlayui默认设置为左侧栏风格，因此如果使用头部栏风格，需要覆盖如下设置项。
+ @Author：cbox
+ 
+ */
+
+/* 重置布局结构 */
+.layui-layout-admin .layui-side{top: 50px;}
+.layui-layout-admin .layui-layout-left{left: 0px;}
+.layui-layout-admin .layui-layout-left .top-title{margin-left: 40px;font-size:22px;line-height:50px;}
+.layui-layout-admin .layui-logo{display:none;}
+
+
+/* 头部导航 */
+.layui-layout-admin .layui-layout-left .layui-nav-item{margin: 0 5px;}
+
+
+/* 侧边菜单 */
+.layui-side-menu .layui-nav{ margin-top:0; }
+
+/* 侧边收缩模式 */
+.layadmin-side-shrink .layui-layout-admin .layui-logo{display:block;}

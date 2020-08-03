@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd">
+ <!--   
+        diskStore ：指定数据存储位置，可指定磁盘中的文件夹位置  
+        defaultCache ： 默认的管理策略            
+        以下属性是必须的：  
+        name： Cache的名称，必须是唯一的(ehcache会把这个cache放到HashMap里)。
+        maxElementsInMemory：在内存中缓存的element的最大数目。   
+        maxElementsOnDisk：在磁盘上缓存的element的最大数目，默认值为0，表示不限制。   
+        eternal：设定缓存的elements是否永远不过期。如果为true，则缓存的数据始终有效，如果为false那么还要根据timeToIdleSeconds，timeToLiveSeconds判断。   
+        overflowToDisk： 如果内存中数据超过内存限制，是否要缓存到磁盘上。                 
+        以下属性是可选的：  
+        timeToIdleSeconds： 对象空闲时间，指对象在多长时间没有被访问就会失效。只对eternal为false的有效。默认值0，表示一直可以访问。  
+        timeToLiveSeconds： 对象存活时间，指对象从创建到失效所需要的时间。只对eternal为false的有效。默认值0，表示一直可以访问。  
+        diskPersistent： 是否在磁盘上持久化。指重启jvm后，数据是否有效。默认为false。   
+        diskExpiryThreadIntervalSeconds： 对象检测线程运行时间间隔。标识对象状态的线程多长时间运行一次。   
+        diskSpoolBufferSizeMB： DiskStore使用的磁盘大小，默认值30MB。每个cache使用各自的DiskStore。   
+        memoryStoreEvictionPolicy： 如果内存中数据超过内存限制，向磁盘缓存时的策略。默认值LRU，可选FIFO、LFU。             
+            缓存的3 种清空策略 ：  
+        FIFO ，first in first out (先进先出).  
+        LFU ， Less Frequently Used (最少使用).意思是一直以来最少被使用的。缓存的元素有一个hit 属性，hit 值最小的将会被清出缓存。  
+        LRU ，Least Recently Used(最近最少使用). (ehcache 默认值).缓存的元素有一个时间戳，当缓存容量满了，而又需要腾出地方来缓存新的元素的时候，那么现有缓存元素中时间戳离当前时间最远的元素将被清出缓存。
+          
+          参考：http://blog.csdn.net/lzwjavaphp/article/details/13767019      
+      http://haohaoxuexi.iteye.com/blog/2121782        
+-->  
+	<!-- <diskStore path="${java.io.tmpdir}/${system.project_name}/cache" />  -->
+	<diskStore path="java.io.tmpdir" />
+	<defaultCache 
+		maxElementsInMemory="10000" 
+		eternal="true" 
+		timeToIdleSeconds="0" 
+		timeToLiveSeconds="0" 
+		overflowToDisk="true" />
+	<cache name="dataCache"
+        maxElementsInMemory="10000"
+        eternal="true"
+        overflowToDisk="true"
+        timeToIdleSeconds="0"
+        timeToLiveSeconds="0"
+        memoryStoreEvictionPolicy="LFU" />       
+<!-- 
+	 4.1 maxElementsInMemory
+           如maxElementsInMemory="10000" ，内存中存储的对象的个数, 内存管理的缓存元素数量最大限值。 
+
+     4.2 overflowToDisk
+           如overflowToDisk="true" 对象在内存中达到最大个数的时候，是否写入硬盘。 
+
+     4.3 eternal
+           如eternal="false"，表示cache中的对象是否过期，缺省为过期（按照配置中的时间），如果改为true，表示该对象永远不过期。 即cache中的元素将一直保存在内存中，不会因为时间超时而丢失，所以在这个值为true的时候，timeToIdleSeconds和timeToLiveSeconds两个属性的值就不起作用了。
+
+     4.4 maxElementsOnDisk
+          如maxElementsOnDisk="10000000" 在硬盘上最大的对象个数, 硬盘管理的缓存元素数量最大限值。默认值为0，就是没有限制。 
+
+     4.5 timeToIdleSeconds
+          如timeToIdleSeconds="3600" 设定元素在过期前空闲状态的时间，只对非持久性缓存对象有效。即多长时间不访问该缓存，那么ehcache就会清除该缓存。默认值为0,值为0意味着元素可以闲置至无限长时间。 
+
+     4.6 timeToLiveSeconds
+           如timeToLiveSeconds="100000" 设定元素从创建到过期的时间。对象存活多少秒过期. 默认值为0,值为0意味着元素可以存活至无限长时间。 意思是从cache中的某个元素从创建到消亡的时间，从创建开始计时，当超过这个时间，这个元素将被从cache中清除。
+
+     4.7 diskPersistent 
+           如diskPersistent="false" 是否持久化磁盘缓存，设定在虚拟机重启时是否进行磁盘存储，默认为false。要想把cache真正持久化到磁盘，写程序时必须注意，在是用net.sf.ehcache.Cache的void put (Element element)方法后要使用void flush()方法。
+
+     4.8 diskExpiryThreadIntervalSeconds
+           如diskExpiryThreadIntervalSeconds=”1000”: 访问磁盘线程活动时间。
+
+     4.9 diskSpoolBufferSizeMB
+           存入磁盘时的缓冲区大小，默认30MB,每个缓存都有自己的缓冲区。
+
+     4.10 emoryStoreEvictionPolicy
+           如 emoryStoreEvictionPolicy=” LRU”,元素逐出缓存规则。共有三种，(LRU)最近最少使用（缓存的元素有一个时间戳，当缓存容量满了，而又需要腾出地方来缓存新的元素的时候，那么现有缓存元素中时间戳离当前时间最远的元素将被清出缓存），为默认。First In First Out (FIFO)，先进先出。Less Frequently Used(specified as LFU)最少使用（直白一点就是讲一直以来最少被使用的。如上面所讲，缓存的元素有一个hit属性，hit值最小的将会被清出缓存）。
+
+     4.11 name
+           指定一个cache的名字，用来识别不同的cache，必须惟一。
+
+其中必须要填的属性为:  maxElementsInMemory   maxElementsOnDisk   eternal   overflowToDisk
+
+ -->
+</ehcache>

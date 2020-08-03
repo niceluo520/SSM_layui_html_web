@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:cache="http://www.springframework.org/schema/cache"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache-4.0.xsd">
+	
+	<!-- spring父容器：主要是整个web应用共享的组件：全局配置文件、服务层、dao层、事务、缓存、数据源等 -->
+	
+	
+	<!-- 扫描注解bean：父容器扫描service、dao等 -->
+	<context:component-scan base-package="com.cbox.*">
+		<context:exclude-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+	
+	
+	<!-- 【加载全局配置文件】Begin -->
+	<bean id="configProperties"
+		class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="locations">
+			<list>
+				<value>classpath:application.properties</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PreferencesPlaceholderConfigurer">
+		<property name="properties" ref="configProperties" />
+	</bean>
+	<!-- 【加载全局配置文件】End -->
+	
+	<!-- 【事务管理】Begin -->
+	<!-- 1. 配置事务管理器  -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<!-- 2. 配置事务属性。<tx:advice>元素声明事务通知 -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<!-- 根据方法名指定事务的属性，rollback-for配置事务遇到异常必须回滚 -->
+			<tx:method name="insert*" propagation="NESTED" rollback-for="Exception" />
+			<tx:method name="add*" propagation="NESTED" rollback-for="Exception" />
+            <tx:method name="save*" propagation="NESTED" rollback-for="Exception" />
+			<tx:method name="do*" propagation="NESTED" rollback-for="Exception" />
+			<tx:method name="update*" propagation="NESTED" rollback-for="Exception" />
+			<tx:method name="modify*" propagation="NESTED" rollback-for="Exception" />
+			<tx:method name="edit*" propagation="NESTED" rollback-for="Exception" />
+			<tx:method name="del*" propagation="NESTED" rollback-for="Exception" />
+			<tx:method name="get*" read-only="true" />
+			<tx:method name="find*" read-only="true" />
+			<tx:method name="query*" read-only="true" />
+			<tx:method name="search*" read-only="true" />
+			<tx:method name="select*" read-only="true" />
+			<tx:method name="count*" read-only="true" />
+		</tx:attributes>
+	</tx:advice>	
+	
+	<aop:aspectj-autoproxy proxy-target-class="true" />
+	
+	<!-- 3. 配置事务切入点, 以及把事务切入点和事务属性关联起来 -->
+	<aop:config>
+		<!-- 配置哪些方法需要配置事务管理 这里配置service层，所以要求涉及业务操作的代码需要放到service层编写 -->
+		<aop:pointcut id="allServiceMethod" expression="execution(* com.cbox..service.*.*(..))" />		
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="allServiceMethod" />
+	</aop:config>
+	
+	<!-- 4.启用事务注解@Transactional。可以在public方法上添加@Transactional注解来生效事务；如果在类上标注@Transactional注解，则该类所有公有方法的事务都生效 -->
+	<tx:annotation-driven transaction-manager="transactionManager" />		
+	
+	<!-- 5.开启aspectj代理 -->
+	<!-- a. 设置proxy-target-class="true"，否则无法依赖注入-->
+	<!-- b. 设置expose-proxy="true"，暴露aop代理到ThreadLocal，用以解决调用自调用带来的事务失效问题  -->
+	<aop:aspectj-autoproxy proxy-target-class="true" expose-proxy="true"  />
+		
+	<!-- 【事务管理】End -->
+
+	<!-- 【Ecache缓存】Begin -->
+	<bean id="ehCacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+		<property name="configLocation" value="classpath:ehcache.xml" />
+		<property name="shared" value="true" />
+	</bean>
+	<bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
+		<property name="cacheManager" ref="ehCacheManager" />
+	</bean>
+	<!-- 【Ecache缓存】End -->
+	
+	<!-- 【工具类】Begin -->
+	<!-- spring容器工具类，使用此工具可直接获取spring注入的对象 -->
+	<bean class="com.cbox.base.util.SpringUtil" />
+	<bean id="RSAUtil" class="com.cbox.base.util.RSAUtil"/>
+	<!-- 【工具类】End -->
+</beans>  

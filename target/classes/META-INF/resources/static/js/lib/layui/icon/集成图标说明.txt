@@ -1,0 +1,11 @@
+扩展引入1000多个图标说明：
+
+集成layui官网提供的整合图标包：layui图标库V1.5
+官网地址：https://fly.layui.com/jie/24210/
+集成方法：
+1、请替换font文件夹。（相同文件不覆盖）
+2、上传icon文件夹。
+3、引用icon文件夹里的icon.css
+
+
+预览图标请查看：WEB-INF/pages/common/icon_show.html

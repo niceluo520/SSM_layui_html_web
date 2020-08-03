@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cbox.business.system.user.userlist.dao.UserlistMapper">
+	<select id="doLoadListList0" parameterType="java.util.Map" resultType="java.util.HashMap">		
+		<![CDATA[
+			SELECT t.rec_id,t.user_id,t.user_name,(CASE t.sex WHEN '1' THEN '男' WHEN '0' THEN '女' END) sex,
+            t.email,t.mobile_phone,t.h_img,t.last_online,t.is_admin,
+            (CASE t.is_admin WHEN '1' THEN '是' WHEN '0' THEN '否' END) _admin,
+            t.locked,(CASE locked WHEN '1' THEN '正常' WHEN '0' THEN '锁定' END) _locked,
+            t.rec_time,c.role_id,s.area_sname AS userbirthplace,
+            t.education,t.profession,ifnull(e.edu_name,'未知')edu_name
+            FROM s_sysuser t 
+            LEFT JOIN s_sysuser_auth c ON t.rec_id=c.user_id AND c.auth_type='role' 
+            LEFT JOIN s_sysarea s ON t.area_code=s.area_code 
+            left join s_user_education e on t.education=e.edu_code
+            WHERE t.rec_status='1'
+		]]>
+		<if test="locked != null and locked != ''">
+			and locked =#{locked}
+		</if>
+		<if test="user_name != null and user_name != ''">
+			and user_name like CONCAT('%', #{user_name}, '%')
+		</if>
+        <if test="edu_code != null and edu_code != ''">
+            and t.education = #{edu_code}
+        </if>
+        <if test="profession != null and profession != ''">
+            and t.profession like CONCAT('%', #{profession}, '%')
+        </if>
+ 
+		<choose>
+			<when test="listTitleSortColumn != null and listTitleSortColumn != ''">
+				order by ${listTitleSortColumn}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+
+</mapper>

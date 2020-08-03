@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta charset="utf-8" />
+<title>${System_Name}</title>
+<meta name="description" content="User login page" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<link rel="shortcut icon" href="${ctx.contextPath}/static/images/favicon.ico">
+<link href="${ctx.contextPath}/static/js/lib/layui/css/layui.css" media="all" rel="stylesheet" type="text/css" />
+
+<!-- 引入公共js、css -->
+<script type="text/javascript" src="${ctx.contextPath}/static/js/lib/jquery/jquery-1.11.2.min.js"></script>
+<script type="text/javascript" src="${ctx.contextPath}/static/js/lib/rsa/RSA.js"></script>
+<script type="text/javascript" src="${ctx.contextPath}/static/js/lib/rsa/BigInt.js"></script>
+<script type="text/javascript" src="${ctx.contextPath}/static/js/lib/rsa/Barrett.js"></script>
+<!-- layui -->
+<script type="text/javascript" src="${ctx.contextPath}/static/js/lib/layui/layui.all.js"></script>
+<script type="text/javascript">
+	 var contextPath = "${ctx.contextPath}";
+	// 页面初始化，本处使用定时器处理
+	// 如果使用onload或者jquery的$(document).read(function(){...});未必能达到效果。因地制宜。
+	var initScript = setInterval(function() {
+		// 针对iframe嵌套的情况
+		if (window.top != null && window.top.document.URL != document.URL) {
+			clearInterval(initScript);
+			window.top.location.href = document.URL;
+		}
+	}, 400);
+</script>
+<style>
+body {
+	margin: 0;
+	padding: 0;
+	width: 100vw;
+	height: 100vh;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+	background: url('${ctx.contextPath}/static/images/LoginBackground.jpg');
+	background-size: cover;
+}
+
+.login {
+	margin: 0;
+	padding: 0;
+	background: #fff;
+	box-shadow: 0 0 30px rgba(66, 64, 64, 0.4);
+	min-width: 380px;
+	min-height: 320px;
+	border-radius: 3px; --formbox: 45px;
+}
+
+.login input {
+	outline: none;
+}
+
+.logo {
+	padding: 25px 20px 10px 20px;
+	display: flex;
+	justify-content: center;
+	align-content: center;
+	align-items: center;
+	font-size: 32px;
+	font-weight: bold;
+}
+
+.logo .pic {
+	margin: 0 5px;
+	display: flex;
+	align-items: center;
+}
+
+.logo .text p {
+	margin: 0;
+	padding: 0;
+}
+
+.form {
+	margin: 0 20px 20px 20px;
+	padding: 0;
+	list-style: none;
+}
+
+.form li {
+	margin-top: 15px;
+	display: flex;
+	flex-direction: column;
+}
+
+.form li span {
+	font-size: 13px;
+	color: rgba(0, 0, 0, .6);
+	display: none;
+}
+
+.form input {
+	border: none;
+}
+
+.form .box {
+	margin: 0;
+	padding: 0;
+	display: flex;
+	justify-content: stretch;
+	align-items: stretch;
+	height: var(--formbox);
+	border: 1px solid rgb(196, 199, 202);
+}
+
+.form .box:hover {
+	border: 1px solid rgb(33, 134, 206);
+}
+
+.form .box .icon {
+	width: var(--formbox);
+	height: var(--formbox);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-basis: var(--formbox);
+}
+
+.form .box input::-webkit-input-placeholder {
+	font-size: 13px;
+	font-weight: normal;
+}
+
+.form .box input {
+	flex-grow: 1;
+	font-size: 14px;
+	font-weight: bold;
+}
+
+.btn {
+	padding: 0 20px 20px 20px;
+}
+
+.submit {
+	display: block;
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	outline: none;
+	height: 50px;
+	border: none;
+	border-radius: 3px;
+	background: rgb(47, 118, 248);
+	color: #fff;
+	font-size: 16px;
+	cursor: pointer;
+}
+
+.submit:hover {
+	background: rgb(26, 96, 226);
+}
+
+.info {
+	margin: 10px;
+	color: red;
+	text-align: center;
+}
+
+.footer {
+	margin: 20px;
+}
+
+</style>
+<body>
+	<div class="header"></div>
+	<div class="login">
+		<div class="logo">
+			<div class="text">
+				首次修改密码
+			</div>
+		</div>
+		<!--登录表单-->
+		<input type="hidden" id="empoent" name="empoent" value="${rsa_empoent}" />
+		<input type="hidden" id="module" name="module" value="${rsa_module}" />
+		<form id="loginForm" method="post">
+			<input id="J_password" name="password" type="hidden" />
+			<ul class="form">
+				<li><span>新密码：</span>
+					<div class="box">
+						<div class="icon">
+							<img src="${ctx.contextPath}/static/images/password.png" width="23px" height="23px">
+						</div>
+						<input type="password" autocomplete="off" placeholder="请输入6-12位数字与字母的组合的新密码" id="newPass"
+							maxlength="12" />
+					</div>
+				</li>
+				<li><span>确认新密码：</span>
+					<div class="box">
+						<div class="icon">
+							<img src="${ctx.contextPath}/static/images/password.png" width="23px" height="23px">
+						</div>
+						<input type="password" autocomplete="off" placeholder="请输入您的确认密码" id="newPassQ" maxlength="12" />
+					</div>
+				</li>
+			</ul>
+			<div class="info"></div>
+			<div class="btn">
+				<button type="button" class="submit" onClick="doEditPwd()">修改</button>
+			</div>
+		</form>
+	</div>
+	<div class="footer"></div>
+
+	<script type="text/javascript">
+        <!-- Enter 触发提交 -->
+        document.onkeydown = keyDownEnter;
+        function keyDownEnter(e) {
+            var currEvent = e || event;
+            if (currEvent.keyCode == 13) {
+            	doEditPwd();
+            }
+        }
+		function doEditPwd() {
+            var password = $("#newPass").val();
+            var passwordQ = $("#newPassQ").val();     
+            if((password=="")||(password.length<6)){
+                parent.layer.msg("输入的新密码,长度不得少于6位！", {icon: 2,time:2000});
+                $("#newPass").focus();
+                return;
+            }
+            if((passwordQ=="")||(passwordQ.length<6)){
+                parent.layer.msg("输入的确认密码,长度不得少于6位！", {icon: 2,time:2000});
+                $("#newPassQ").focus();
+                return;
+            }
+            var regu =/^(?![\\d]+$)(?![a-zA-Z]+$)(?![^\\da-zA-Z]+$).{6,12}$/;
+            var re = new RegExp(regu);
+            if (!re.test(password)){
+                parent.layer.msg("请输入6-12位数字与字母的组合的新密码", {icon: 2,time:2000});
+            	return;            	
+            }
+            if(password!=passwordQ){
+                parent.layer.msg("用户新密码与确认密码不一致", {icon: 2,time:2000});
+                return;
+            }           
+            //加密
+            $("#J_password").val(rsaResult(password));
+            $("#newPass").val("");
+            $("#newPassQ").val("");
+
+            layer.msg('提交中，请稍等', {
+                icon: 16,//信息框和加载层的私有参数
+                shade: 0.01,
+                time:0,//自动关闭的时间 也可以通过layer.closeAll();来关闭所有弹层
+            });//加载样式
+
+			$.ajax({
+				url:contextPath+ "/login/doEditPwd",
+				type: "post",
+				dataType: "json",
+				data: $("#loginForm").serialize(),
+				success: function (data) {
+                    layer.closeAll();
+                    if(data.retCode==0){
+                        window.top.location.href=contextPath + '/home';
+                    }else if(data.retCode==10){
+                        parent.layer.msg(data.retMsg, {icon: 2,time:2000});
+                        setTimeout(() => {
+	                        window.top.location.href=contextPath + '/login';
+						}, 3000);
+                    }else{
+                    	parent.layer.msg(data.retMsg, {icon: 2,time:2000});
+                    }
+				},
+				error: function (xhr, data, setting) {
+                    layer.closeAll();
+                    $("#newPass").val("");//回填
+                    $("#newPassQ").val("");//回填
+                    parent.layer.msg("请求出现异常", {icon: 2,time:2000});
+				}
+			});
+		}
+        /** RSA加密 */
+        function rsaResult(value) {
+            setMaxDigits(130);
+            value = encodeURI(value);
+            var empoent = $('#empoent') ? $('#empoent').val() : "";
+            var module = $('#module') ?  $('#module').val() : "";
+            var key = new RSAKeyPair(empoent, "", module);
+            return encryptedString(key, value);
+        }
+	</script>
+
+</body>
+
+</html>
